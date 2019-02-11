@@ -1,0 +1,30 @@
+{
+  "name": "meat-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erlantorres/meat-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/erlantorres/meat-api/issues"
+  },
+  "homepage": "https://github.com/erlantorres/meat-api#readme",
+  "dependencies": {
+    "mongoose": "4.13.9",
+    "restify": "6.3.4",
+    "restify-errors": "5.0.0"
+  },
+  "devDependencies": {
+    "@types/mongoose": "4.7.32",
+    "@types/restify": "5.0.6",
+    "@types/restify-errors": "4.3.2"
+  }
+}

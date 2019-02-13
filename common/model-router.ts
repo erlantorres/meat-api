@@ -22,7 +22,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     }
 
     findAll = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
-        this.model.find()
+        this.model.find(req.query)
             .then(this.renderAll(resp, next))
             .catch(next)
     }

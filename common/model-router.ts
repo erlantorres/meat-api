@@ -9,6 +9,10 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
         super()
     }
 
+    protected preparedOne(query: mongoose.DocumentQuery<D, D>): mongoose.DocumentQuery<D, D> {
+        return query
+    }
+
     ValidateId = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             next(new NotFoundError('Document not found!'))
@@ -24,7 +28,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     }
 
     findById = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
-        this.model.findById(req.params.id)
+        this.preparedOne(this.model.findById(req.params.id))
             .then(this.render(resp, next))
             .catch(next)
     }

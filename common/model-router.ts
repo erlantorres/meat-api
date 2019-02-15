@@ -5,12 +5,20 @@ import { Router } from './router'
 import { NotFoundError } from 'restify-errors';
 
 export abstract class ModelRouter<D extends mongoose.Document> extends Router {
+    basePath: string
     constructor(protected model: mongoose.Model<D>) {
         super()
+        this.basePath = `/${this.model.collection.name}`
     }
 
     protected preparedOne(query: mongoose.DocumentQuery<D, D>): mongoose.DocumentQuery<D, D> {
         return query
+    }
+
+    envelope(document: any): any {
+        let resource = Object.assign({ _links: {} }, document.toJSON())
+        resource._links.self = `${this.basePath}/${resource._id}`
+        return resource
     }
 
     ValidateId = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
@@ -23,6 +31,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
 
     findAll = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
         this.model.find(req.query)
+            // this.model.find(req.query)
             .then(this.renderAll(resp, next))
             .catch(next)
     }

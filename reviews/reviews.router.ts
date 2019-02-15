@@ -12,13 +12,13 @@ class ReviewsRouter extends ModelRouter<Review>{
 
     preparedOne(query: mongoose.DocumentQuery<Review, Review>): mongoose.DocumentQuery<Review, Review> {
         return query.populate('restaurant', 'name')
-                    .populate('user', 'name')
+            .populate('user', 'name')
     }
 
     applyRoutes(application: restify.Server) {
-        application.get('/reviews', this.findAll)
-        application.get('/reviews/:id', [this.ValidateId, this.findById])
-        application.post('/reviews', this.save)
+        application.get(this.basePath, this.findAll)
+        application.get(`${this.basePath}/:id`, [this.ValidateId, this.findById])
+        application.post(this.basePath, this.save)
     }
 }
 

@@ -4,7 +4,6 @@ import { NotFoundError } from 'restify-errors';
 
 export abstract class Router extends EventEmitter {
     abstract applyRoutes(application: restify.Server)
-
     
     envelope(document: any): any {
         return document

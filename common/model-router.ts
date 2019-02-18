@@ -6,6 +6,7 @@ import { NotFoundError } from 'restify-errors';
 
 export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     basePath: string
+    limit: number = 20
 
     constructor(protected model: mongoose.Model<D>) {
         super()
@@ -22,6 +23,28 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
         return resource
     }
 
+    envelopeAll(documents: any[], options: any = {}) {
+        const resource: any = {
+            _links: {
+                self: options.url
+            },
+            items: documents
+        }
+        if (options.page && options.pageSize && options.count) {
+
+            if (options.page > 1) {
+                resource._links.previous = `${this.basePath}?page=${options.page - 1}`
+            }
+
+            const remaining = options.count - (options.page * options.pageSize)
+            if (remaining > 0) {
+                resource._links.next = `${this.basePath}?page=${options.page + 1}`
+            }
+        }
+
+        return resource
+    }
+
     ValidateId = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             next(new NotFoundError('Document not found!'))
@@ -31,9 +54,19 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     }
 
     findAll = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
-        this.model.find(req.query)
-            .then(this.renderAll(resp, next))
+        let page = parseInt(req.params.page || 1)
+        page = page > 0 ? page : 1
+        const limit = parseInt(req.params.limit || this.limit)
+        const skip = (page * limit)
+
+        this.model
+            .count({}).exec()
+            .then(count => {
+                this.model.find(req.query).skip(skip).limit(limit)
+                    .then(this.renderAll(resp, next, { page, pageSize: limit, count, url: req.url }))
+            })
             .catch(next)
+
     }
 
     findById = (req: restify.Request, resp: restify.Response, next: restify.Next) => {

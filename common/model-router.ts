@@ -6,7 +6,7 @@ import { NotFoundError } from 'restify-errors';
 
 export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     basePath: string
-    limit: number = 20
+    pageSize: number = 20
 
     constructor(protected model: mongoose.Model<D>) {
         super()
@@ -56,7 +56,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     findAll = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
         let page = parseInt(req.params.page || 1)
         page = page > 0 ? page : 1
-        const limit = parseInt(req.params.limit || this.limit)
+        const limit = parseInt(req.params.pageSize || this.pageSize)
         const skip = (page * limit)
 
         this.model

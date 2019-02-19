@@ -1,6 +1,6 @@
 import { Server } from './server/server'
 import { mainRouter } from './main.router';
-import { usersRouter } from './users/users.route'
+import { usersRouter } from './users/users.router'
 import { restaurantsRouter } from './restaurants/restaurants.router';
 import { reviewsRouter } from './reviews/reviews.router';
 

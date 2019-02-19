@@ -40,6 +40,12 @@ class RestaurantsRouter extends ModelRouter<Restaurant>{
 
     }
 
+    envelope(document: any): any {
+        let resource = super.envelope(document)
+        resource._links.menu = `${this.basePath}/${resource._id}/menu`
+        return resource
+    }
+
     applyRoutes(application: restify.Server) {
         application.get(this.basePath, this.findAll)
         application.get(`${this.basePath}/:id`, [this.ValidateId, this.findById])

@@ -57,7 +57,7 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
         let page = parseInt(req.params.page || 1)
         page = page > 0 ? page : 1
         const limit = parseInt(req.params.pageSize || this.pageSize)
-        const skip = (page * limit)
+        const skip = ((page - 1) * limit)
 
         this.model
             .count({}).exec()

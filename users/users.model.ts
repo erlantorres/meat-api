@@ -7,11 +7,14 @@ import { environment } from './../common/environment';
 export interface User extends mongoose.Document {
     name: string,
     email: string,
-    password: string
+    password: string,
+    gender: string,
+    cpf: string,
+    matches(password: string): Boolean
 }
 
 export interface UserModel extends mongoose.Model<User> {
-   findByEmail(email: string): Promise<User>
+    findByEmail(email: string, projection?: string): Promise<User>
 }
 
 const userSchema = new mongoose.Schema({
@@ -46,8 +49,12 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-userSchema.statics.findByEmail = function (email: string) {
-    return this.findOne({ email })
+userSchema.statics.findByEmail = function (email: string, projection: string) {
+    return this.findOne({ email }, projection)
+}
+
+userSchema.methods.matches = function (password: string): Boolean {
+    return bcrypt.compareSync(password, this.password)
 }
 
 const hashPassword = (obj, next) => {

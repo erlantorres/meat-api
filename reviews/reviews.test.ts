@@ -1,11 +1,13 @@
 import 'jest'
 import * as request from 'supertest'
 
-let address: string = (<any>global).address
+const address: string = (<any>global).address
+const auth: string = (<any>global).auth
 
 test('get /reviews', () => {
     return request(address)
         .get('/reviews')
+        .set('Authorization', auth)
         .then(response => {
             expect(response.status).toBe(200)
             expect(response.body.items).toBeInstanceOf(Array)
@@ -16,6 +18,7 @@ test('get /reviews', () => {
 test('post /reviews', () => {
     return request(address)
         .post('/reviews')
+        .set('Authorization', auth)
         .send({
             date: '2019-02-13T14:30:00.000Z',
             rating: 5,
@@ -40,6 +43,7 @@ test('post /reviews', () => {
 test('get /reviews/aaaa - not found', () => {
     return request(address)
         .get('/reviews/aaaa')
+        .set('Authorization', auth)
         .then(response => {
             expect(response.status).toBe(404)
         })

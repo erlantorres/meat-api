@@ -76,9 +76,8 @@ export abstract class ModelRouter<D extends mongoose.Document> extends Router {
     }
 
     save = (req: restify.Request, resp: restify.Response, next: restify.Next) => {
-        console.log(req.body)
-        let user = new this.model(req.body)
-        user.save()
+        let model = new this.model(req.body)
+        model.save()
             .then(this.render(resp, next))
             .catch(next)
     }
